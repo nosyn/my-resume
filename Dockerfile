@@ -1,20 +1,12 @@
-# Use an official TeX Live image as the base image
-FROM danteev/texlive:latest
+FROM ubuntu:xenial
+ENV DEBIAN_FRONTEND noninteractive
 
-# Set the working directory to /app
-WORKDIR /app
+RUN apt-get update -q && apt-get install -qy \
+    curl jq \
+    texlive-full \
+    python-pygments gnuplot \
+    make git \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy the current directory contents into the container at /app
-COPY . /app
-
-# Install any additional LaTeX packages needed
-# RUN tlmgr update --self && tlmgr install <package-name>
-
-# Compile the LaTeX document to a PDF
-RUN pdflatex son_nguyen_resume.tex
-
-# Expose port 80 for web access
-EXPOSE 80
-
-# Set the default command to run when the container starts
-CMD ["pdflatex", "-interaction=nonstopmode", "son_nguyen_resume.tex"]
+WORKDIR /data
+VOLUME ["/data"]
